@@ -1,5 +1,4 @@
 import express from 'express'
-import path from 'path'
 import dotenv from 'dotenv'
 import { Client } from 'pg'
 import cors from 'cors'
@@ -14,7 +13,6 @@ const client = new Client({
 client.connect()
 
 const app = express(),
-  // eslint-disable-next-line no-undef
   port = process.env.PORT || 3000
 
 app.use(cors())
