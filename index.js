@@ -1,11 +1,31 @@
 import express from 'express'
+import path from 'path'
+import dotenv from 'dotenv'
+import { Client } from 'pg'
+import cors from 'cors'
+
+dotenv.config()
+
+const client = new Client({
+  connectionString: process.env.PGURI,
+  ssl: { rejectUnauthorized: false }
+})
+
+client.connect()
 
 const app = express(),
   // eslint-disable-next-line no-undef
   port = process.env.PORT || 3000
 
-app.get('/', (_request, response) => {
-  response.send({ hello: 'World' })
+app.use(cors())
+
+app.get('/players', (_req, res) => {
+  client.query('SELECT * FROM players')
+    .then(result => res.json(result.rows))
+    .catch(err => {
+      console.error(err)
+      res.status(500).send('Fel vid hämtning av spelare')
+    })
 })
 
 app.listen(port, () => {
